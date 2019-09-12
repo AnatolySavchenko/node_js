@@ -7,20 +7,18 @@ const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 
-// const indexRouter = require('./routes/index');
 const todoRouter = require('./routes/todos');
 
 const app = express();
 
-app.set('views',path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+//app.set('views',path.join(__dirname, 'views'));
+//app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended:false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname,'public')));
-// app.use('/', indexRouter);
 
 
 app.use(cors());
