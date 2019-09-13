@@ -8,11 +8,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const todoRouter = require('./routes/todos');
+const connectDB = require('./database/db');
 
 const app = express();
-
-//app.set('views',path.join(__dirname, 'views'));
-//app.set('view engine', 'pug');
 
 app.use(logger('dev'));
 app.use(bodyParser.json());
