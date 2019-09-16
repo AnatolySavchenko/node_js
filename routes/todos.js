@@ -1,9 +1,23 @@
 const express = require('express');
 const router = express.Router();
+const todoController = require('../controllers/todoController');
 
+router.post('/',todoController.createTask);
+router.get('/',todoController.getAllTask);
+router.put('/',todoController.updateAll);
+router.put('/:id',todoController.updateTask);
+router.delete('/',todoController.deleteAllTaskComplited);
+router.delete('/:id', todoController.deleteTodo);
+
+module.exports = router;
+
+/*
 let todolist = [];
 
 router.get('/', (req, res, next) => {
+	todolist.forEach((item,i) => {
+		item.id = i
+	});
 	res.send(todolist);
 });
 
@@ -14,14 +28,14 @@ router.post('/', (req, res, next) => {
 
 router.put('/', (req,res,next) => {
 	let arrayAfterDelete = req.body.data;
-	console.log('--------req.body', req.body.data);
-	
+
 	if(arrayAfterDelete.every(item => item.status)) {
 		todolist.forEach(item => item.status = true);
 	} else if ((arrayAfterDelete.every(item => item.status)) === false) {
 		todolist.forEach(item => item.status = false);
 	}
 	res.send(todolist);
+
 });
 
 router.put('/:id', (req, res, next) => {
@@ -39,12 +53,11 @@ router.put('/:id', (req, res, next) => {
 
 router.delete('/',(req, res, next) => {
 	todolist = req.body;
-	console.log(todolist);
-
 	res.send(todolist);
 });
 
 router.delete('/:id', (req, res, next) => {
+	console.log(req.body);
 	let attributeElement = req.body.id;
 	todolist.forEach((item, i) => {
 		if (item.id === attributeElement) {
@@ -54,5 +67,4 @@ router.delete('/:id', (req, res, next) => {
 	res.send(todolist);
 });
 
-
-module.exports = router;
+ */
