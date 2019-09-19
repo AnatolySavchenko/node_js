@@ -2,6 +2,7 @@ const Task = require('../model/modelTask');
 
 exports.createTask = function (req,res) {
 	const task = new Task({
+		classNameEdited: req.body.classNameEdited,
 		value: req.body.value
 	});
 	task.save((err, task) => {
