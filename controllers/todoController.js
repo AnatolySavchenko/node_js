@@ -1,7 +1,6 @@
 const Task = require('../model/modelTask');
-// const tasks = Task.find({});
 
-exports.createTask = function (req, res) {
+exports.createTask = (req, res) => {
 	const task = new Task({
 		classNameEdited: req.body.classNameEdited,
 		value: req.body.value
@@ -10,49 +9,56 @@ exports.createTask = function (req, res) {
 		res.status(200).json(task);
 	})
 };
-exports.getAllTask = function (req, res) {
+exports.getAllTask = (req, res) => {
 	Task.find({})
 		.then(task => res.send(task))
 		.catch(e => res.send(e))
 };
-exports.updateTask = function (req, res) {
+exports.updateTask = (req, res) => {
 	Task.findById(req.params.id).updateOne({
 		value: req.body.value,
 		status: req.body.status
 	})
 		.then(() => {
-			Task.find({}).then(task => {
-				res.send(task);
-			}).catch(e => res.send(e));
+			Task.find({})
+				.then(task => {
+					res.send(task);
+				})
+				.catch(e => res.send(e));
 		})
 		.catch(err => res.send(err))
 };
 
-exports.updateAll = function (req, res) {
+exports.updateAll = (req, res) => {
 	Task.find({}).updateMany({}, {status: req.body.data})
 		.then(() => {
-			Task.find({}).then(task => {
-				res.send(task);
-			}).catch(e => res.send(e));
+			Task.find({})
+				.then(task => {
+					res.send(task);
+				})
+				.catch(e => res.send(e));
 		})
 		.catch(err => res.send(err))
 };
 
-exports.deleteTodo = function (req, res) {
+exports.deleteTodo = (req, res) => {
 	Task.findById(req.params.id).deleteOne()
 		.then(() => {
-			Task.find({}).then(task => {
-				res.send(task);
-			}).catch(e => res.send(e));
+			Task.find({})
+				.then(task => {
+					res.send(task);
+				})
+				.catch(e => res.send(e));
 		})
 		.catch(err => res.send(err));
 };
-exports.deleteAllTaskComplited = function (req, res) {
+exports.deleteAllTaskComplited = (req, res) => {
 	Task.find({status: true}).deleteMany()
 		.then(() => {
 			Task.find({}).then(task => {
 				res.send(task);
-			}).catch(e => res.send(e));
+			})
+				.catch(e => res.send(e));
 		})
 		.catch(err => res.send(err));
 };
