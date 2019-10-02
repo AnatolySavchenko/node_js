@@ -40,11 +40,11 @@ exports.createUser = async (req, res) => {
 		message = 'Your password  not match with field check password';
 		res.send(message).end();
 	}
-	// // else {
-	// // 	user.save((err, user) => {
-	// // 		res.status(200).json(user).end();
-	// // 	});
-	// }
+	else {
+		user.save((err, user) => {
+			res.status(200).json(user).end();
+		});
+	}
 
 
 };
