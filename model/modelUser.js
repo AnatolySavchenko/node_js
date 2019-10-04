@@ -10,6 +10,8 @@ const schemeUser = new Scheme({
 		}
 	},
 	password: String,
+	task: []
 });
 
 module.exports = mongoose.model('User',schemeUser);
+
