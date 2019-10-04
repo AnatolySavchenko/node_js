@@ -79,160 +79,94 @@ exports.getUser = async (req, res) => {
 };
 
 
-exports.getTasks = (req, res) => {
-	User.find({})
-		.then(task => res.send(task))
-		.catch(e => res.send(e))
+exports.getTasks = async (req, res) => {
 
-	// let users = await User.find({});
-	//
-	// if (req.body.value) {
-	//
-	// 	users.forEach(item => {
-	// 		if (item.userName === req.body.userName) {
-	// 			const newItem = {
-	// 				status: false,
-	// 				classNameEdited: req.body.classNameEdited,
-	// 				value: req.body.value
-	// 			};
-	//
-	// 			const task = [...item.task, newItem];
-	//
-	// 			task.save
-	//
-	//
-	// 			res.send(task);
-	// 		}
-	// 	})
-	// } else {
-	// 	let userName = req.body.userName;
-	// 	users.forEach(item => {
-	// 		if (userName === item.userName) {
-	// 			res.send(item.task);
-	// 		}
-	// 	})
-	// }
+	let users = await User.find({});
 
-	// .then(task => res.send(task))
-	// .catch(e => res.send(e))
+	users.forEach(item => {
+		if (item.userName === req.body.user) {
+			res.send(item.task);
+		}
+	})
 };
 
 
 exports.createTask = async (req, res) => {
 
-		console.log('eeeeee', req.body);
-
-
 	const newItem = {
 		status: false,
 		classNameEdited: req.body.classNameEdited,
-		value: req.body.value
+		value: req.body.value,
+		_id: new Date().valueOf()
 	};
 
 	User.update(
-		{ userName: req.body.userName },
-		{ $push: { task: newItem }}, () => {
-			res.send('ok');
+		{userName: req.body.userName},
+		{$push: {task: newItem}}, () => {
+			res.send(newItem);
 		}
 	)
-	// User.findOne({userName: req.body.userName}, (err, user) => {
-	// 	if (err) return console.log(err);
-	//
-	// 	let test = user.task;
-	// 	test.push(newItem);
-	// 	console.log('--------tes', test);
-	// }).updateOne({task: '111111'}, () => {
-	// 	res.send('ok');
-	// });
-
-
-
-// let users = await User.findOne({userName: req.body.userName}, (res) => {
-// 	console.log('res', res);
-// });
-// 	console.log('asdasdasdasd', users);
-// 	res.send('ok');
-	// users.forEach(item => {
-	// 	if (item.userName === req.body.userName) {
-	// 		const newItem = {
-	// 			status: false,
-	// 			classNameEdited: req.body.classNameEdited,
-	// 			value: req.body.value
-	// 		};
-	//
-	//
-	// 	//	const task = [...item.task, newItem];
-	//
-	// 		console.log('--------here');
-	//
-	// 		User.findById(item._id).updateOne({
-	// 			userName: 'asdfgh'
-	// 		});
-	// 			res.send('ok');
-	// 	}
-	// })
 };
 
-// .then(task => res.send(task))
-// .catch(e => res.send(e))
-
-
-// exports.createTask = (req, res) => {
-// 	const task = new Task({
-// 		classNameEdited: req.body.classNameEdited,
-// 		value: req.body.value
-// 	});
-// 	task.save((err, task) => {
-// 		res.status(200).json(task);
-// 	})
-// };
 exports.updateTask = (req, res) => {
-	Task.findById(req.params.id).updateOne({
-		value: req.body.value,
-		status: req.body.status
-	})
-		.then(() => {
-			Task.find({})
-				.then(task => {
-					res.send(task);
-				})
-				.catch(e => res.send(e));
-		})
-		.catch(err => res.send(err))
+
+	console.log('--------req', req.body);
+
+
+	let taskUpdate = req.body.todos;
+
+	taskUpdate[req.body.i].classNameEdited = '';
+
+	User.updateOne({userName: req.body.userName},
+		{$set: {task: taskUpdate}}, ()=>{
+			res.send(taskUpdate)
+		});
 };
 
 exports.updateAll = (req, res) => {
-	Task.find({}).updateMany({}, {status: req.body.data})
-		.then(() => {
-			Task.find({})
-				.then(task => {
-					res.send(task);
-				})
-				.catch(e => res.send(e));
-		})
-		.catch(err => res.send(err))
+
+	let taskUpdate = req.body.todos;
+
+	taskUpdate.forEach(item => {
+		if (item.status !== req.body.data) {
+			item.status = req.body.data
+		}
+	});
+
+	User.updateOne({userName: req.body.userName},
+		{$set: {task: taskUpdate}}, ()=>{
+			res.send(taskUpdate)
+		});
+
+
 };
 
-exports.deleteTodo = (req, res) => {
-	Task.findById(req.params.id).deleteOne()
-		.then(() => {
-			Task.find({})
-				.then(task => {
-					res.send(task);
-				})
-				.catch(e => res.send(e));
-		})
-		.catch(err => res.send(err));
+exports.deleteTodo =  (req, res) => {
+
+	let todosAfterDelete = req.body.todos;
+
+	todosAfterDelete.forEach((item,i) => {
+		if(item._id === req.body.id){
+			todosAfterDelete.splice(i,1);
+		}
+	});
+
+	User.updateOne({userName: req.body.userName},
+		{$set: {task: todosAfterDelete}}, ()=>{
+			res.send(todosAfterDelete)
+		});
+
+
 };
 exports.deleteAllTaskComplited = (req, res) => {
-	Task.find({status: true}).deleteMany()
-		.then(() => {
-			Task.find({}).then(task => {
-				res.send(task);
-			})
-				.catch(e => res.send(e));
-		})
-		.catch(err => res.send(err));
+
+	let todosAfterDelete = req.body.todos.filter(item => !item.status);
+
+	User.updateOne({userName: req.body.userName},
+		{$set: {task: todosAfterDelete}}, ()=>{
+			res.send(todosAfterDelete)
+		});
+
 };
 
 
