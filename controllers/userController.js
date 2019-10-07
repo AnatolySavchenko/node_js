@@ -110,10 +110,10 @@ exports.createTask = async (req, res) => {
 
 exports.updateTask = (req, res) => {
 
-	console.log('--------req', req.body);
-
 
 	let taskUpdate = req.body.todos;
+
+	console.log('--------taskUpdate', taskUpdate);
 
 	taskUpdate[req.body.i].classNameEdited = '';
 
